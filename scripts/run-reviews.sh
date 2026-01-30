@@ -1,11 +1,12 @@
 #!/bin/bash
 # run-reviews.sh - Multi-agent parallel code review
 #
-# Usage: run-reviews.sh [TARGET_DIR]
-#   TARGET_DIR: The directory to review (defaults to current directory)
+# Usage: run-reviews.sh TARGET_DIR
+#   TARGET_DIR: The directory/repository to review (REQUIRED)
 #
 # Spawns parallel cursor-agent instances with different models
 # to review staged git changes in the target directory.
+# Results are saved to TARGET_DIR/.reviews/
 
 set -e
 

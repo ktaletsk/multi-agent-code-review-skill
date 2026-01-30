@@ -133,9 +133,11 @@ The user can customize:
 ├── SKILL.md              # This file
 ├── scripts/
 │   └── run-reviews.sh    # Parallel review runner
-├── prompts/
-│   └── review-prompt.md  # Review prompt template
-└── output/               # Results directory
-    ├── review_*.json     # Individual agent outputs
-    └── COMBINED_REVIEW.md
+└── prompts/
+    └── review-prompt.md  # Review prompt template
+
+# Output is saved to the user's project:
+<project>/.reviews/
+├── review_*.json         # Individual agent outputs
+└── COMBINED_REVIEW.md    # Synthesized report
 ```

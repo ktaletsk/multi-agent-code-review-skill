@@ -3,8 +3,14 @@
 #
 # Spawns parallel cursor-agent instances with different models
 # to review staged git changes.
+#
+# IMPORTANT: This script should be run from the repo you want to review.
+# The cursor-agent commands will run in the current working directory.
 
 set -e
+
+# Save the working directory (the repo being reviewed)
+WORKING_DIR="$(pwd)"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILL_DIR="$(dirname "$SCRIPT_DIR")"
@@ -51,6 +57,7 @@ rm -f "$OUTPUT_DIR"/review_*.json
 
 echo "📋 Prompt: $PROMPT_FILE"
 echo "📁 Output: $OUTPUT_DIR"
+echo "📂 Reviewing: $WORKING_DIR"
 echo "🤖 Agents: ${MODELS[*]}"
 echo ""
 echo "Starting parallel reviews..."
@@ -59,11 +66,11 @@ echo ""
 # Read prompt
 PROMPT="$(cat "$PROMPT_FILE")"
 
-# Run all agents in parallel
+# Run all agents in parallel FROM THE WORKING DIRECTORY
 PIDS=()
 for model in "${MODELS[@]}"; do
   echo "  ⏳ Starting: $model"
-  cursor-agent -p --mode=ask --model="$model" "$PROMPT" \
+  (cd "$WORKING_DIR" && cursor-agent -p --mode=ask --model="$model" "$PROMPT") \
     > "$OUTPUT_DIR/review_${model}.json" 2>&1 &
   PIDS+=($!)
 done

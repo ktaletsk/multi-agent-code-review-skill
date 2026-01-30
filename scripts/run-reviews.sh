@@ -9,8 +9,17 @@
 
 set -e
 
-# Get target directory from argument or use current directory
-TARGET_DIR="${1:-$(pwd)}"
+# TARGET_DIR is REQUIRED - must be passed as first argument
+if [ -z "$1" ]; then
+  echo "Error: TARGET_DIR is required"
+  echo "Usage: run-reviews.sh /path/to/project"
+  echo ""
+  echo "The target directory must be the project you want to review,"
+  echo "NOT the skill directory."
+  exit 1
+fi
+
+TARGET_DIR="$1"
 
 # Resolve to absolute path
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"

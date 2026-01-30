@@ -16,36 +16,32 @@ Activate this skill when the user asks to:
 - "Do a multi-agent review"
 - "Get multiple perspectives on this code"
 
-## CRITICAL: Working Directory
+## CRITICAL: Target Directory
 
-**The review must run in the USER'S PROJECT DIRECTORY, not in this skill's directory.**
+**You must pass the USER'S PROJECT DIRECTORY as an argument to the script.**
 
-Before running anything, determine the user's project directory by:
-1. Checking where the user started their Claude Code session
-2. Looking for their project's git root
-3. This is typically NOT `/Users/.../skills/multi-agent-code-review/`
+The user's project directory is where they started their Claude Code session - NOT this skill's directory. Look for the git repository path in the conversation context (e.g., `/Users/.../git/jupyter_server`).
 
 ## Workflow
 
 ### Step 1: Identify the Target Repository
 
-First, determine the user's current working directory (the repo to review):
-
-```bash
-pwd
-```
-
-Confirm this is the correct repository (should have staged git changes to review).
+Determine the user's project directory from the conversation context. This is typically shown at the start of the session or can be found by checking where CLAUDE.md is located. It is NOT `/Users/.../skills/multi-agent-code-review/`.
 
 ### Step 2: Run Parallel Reviews
 
-Run the review script FROM THE USER'S PROJECT DIRECTORY:
+Run the review script and **pass the user's project directory as an argument**:
 
 ```bash
-~/.claude/skills/multi-agent-code-review/scripts/run-reviews.sh
+~/.claude/skills/multi-agent-code-review/scripts/run-reviews.sh /path/to/users/project
 ```
 
-**IMPORTANT**: Run this command from the user's project directory, NOT from the skill directory. The script will automatically detect and use the current working directory.
+For example, if the user is working in `/Users/ktaletskiy/git/jupyter_server`:
+```bash
+~/.claude/skills/multi-agent-code-review/scripts/run-reviews.sh /Users/ktaletskiy/git/jupyter_server
+```
+
+**IMPORTANT**: Always pass the full path to the user's project as the first argument.
 
 This will:
 - Run 4 agents in parallel (configurable in the script)

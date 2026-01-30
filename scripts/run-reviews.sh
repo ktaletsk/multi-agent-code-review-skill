@@ -1,16 +1,19 @@
 #!/bin/bash
 # run-reviews.sh - Multi-agent parallel code review
 #
-# Spawns parallel cursor-agent instances with different models
-# to review staged git changes.
+# Usage: run-reviews.sh [TARGET_DIR]
+#   TARGET_DIR: The directory to review (defaults to current directory)
 #
-# IMPORTANT: This script should be run from the repo you want to review.
-# The cursor-agent commands will run in the current working directory.
+# Spawns parallel cursor-agent instances with different models
+# to review staged git changes in the target directory.
 
 set -e
 
-# Save the working directory (the repo being reviewed)
-WORKING_DIR="$(pwd)"
+# Get target directory from argument or use current directory
+TARGET_DIR="${1:-$(pwd)}"
+
+# Resolve to absolute path
+TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILL_DIR="$(dirname "$SCRIPT_DIR")"
@@ -51,13 +54,18 @@ if ! command -v cursor-agent &> /dev/null; then
   exit 1
 fi
 
+# Verify target directory exists and is a git repo
+if [ ! -d "$TARGET_DIR/.git" ]; then
+  echo -e "${YELLOW}Warning: $TARGET_DIR does not appear to be a git repository${NC}"
+fi
+
 # Setup output directory
 mkdir -p "$OUTPUT_DIR"
 rm -f "$OUTPUT_DIR"/review_*.json
 
 echo "📋 Prompt: $PROMPT_FILE"
 echo "📁 Output: $OUTPUT_DIR"
-echo "📂 Reviewing: $WORKING_DIR"
+echo -e "📂 Target: ${GREEN}$TARGET_DIR${NC}"
 echo "🤖 Agents: ${MODELS[*]}"
 echo ""
 echo "Starting parallel reviews..."
@@ -66,11 +74,11 @@ echo ""
 # Read prompt
 PROMPT="$(cat "$PROMPT_FILE")"
 
-# Run all agents in parallel FROM THE WORKING DIRECTORY
+# Run all agents in parallel FROM THE TARGET DIRECTORY
 PIDS=()
 for model in "${MODELS[@]}"; do
   echo "  ⏳ Starting: $model"
-  (cd "$WORKING_DIR" && cursor-agent -p --mode=ask --model="$model" "$PROMPT") \
+  (cd "$TARGET_DIR" && cursor-agent -p --mode=ask --model="$model" "$PROMPT") \
     > "$OUTPUT_DIR/review_${model}.json" 2>&1 &
   PIDS+=($!)
 done

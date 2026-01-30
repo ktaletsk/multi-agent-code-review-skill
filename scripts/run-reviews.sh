@@ -82,11 +82,11 @@ echo ""
 PROMPT="$(cat "$PROMPT_FILE")"
 
 # Run all agents in parallel with TARGET_DIR as workspace
-# Using --mode=plan allows reading files; --force allows shell commands for git diff
+# --force allows shell commands for git diff; no mode restriction
 PIDS=()
 for model in "${MODELS[@]}"; do
   echo "  ⏳ Starting: $model"
-  cursor-agent -p --mode=plan --force --workspace="$TARGET_DIR" --model="$model" "$PROMPT" \
+  cursor-agent -p --force --workspace="$TARGET_DIR" --model="$model" "$PROMPT" \
     > "$OUTPUT_DIR/review_${model}.json" 2>&1 &
   PIDS+=($!)
 done

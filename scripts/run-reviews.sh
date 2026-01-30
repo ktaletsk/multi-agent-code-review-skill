@@ -17,16 +17,14 @@ TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILL_DIR="$(dirname "$SCRIPT_DIR")"
-OUTPUT_DIR="$SKILL_DIR/output"
+OUTPUT_DIR="$TARGET_DIR/.reviews"
 PROMPT_FILE="$SKILL_DIR/prompts/review-prompt.md"
 
 # Models/Agents to use (customize as needed)
 # Run `cursor-agent --list-models` for available options
 MODELS=(
-  "gpt-5.2-high"
-  "grok"
-  "opus-4.5"
-  "gemini-3-pro"
+  "gemini-3-flash"
+  "sonnet-4.5"
 )
 
 # Colors

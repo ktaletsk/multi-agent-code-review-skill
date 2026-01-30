@@ -44,13 +44,13 @@ For example, if the user is working in `/Users/ktaletskiy/git/jupyter_server`:
 **IMPORTANT**: Always pass the full path to the user's project as the first argument.
 
 This will:
-- Run 4 agents in parallel (configurable in the script)
-- Save individual JSON results to `~/.claude/skills/multi-agent-code-review/output/`
+- Run multiple agents in parallel (configurable in the script)
+- Save individual JSON results to `<project>/.reviews/`
 - Take 1-3 minutes depending on code size
 
 ### Step 3: Synthesize Results
 
-After the script completes, read all JSON files from `~/.claude/skills/multi-agent-code-review/output/` and synthesize them into a combined report.
+After the script completes, read all JSON files from `<project>/.reviews/` (in the user's project directory) and synthesize them into a combined report.
 
 **Synthesis Rules:**
 1. Do NOT mention which agent found which issue
@@ -61,7 +61,7 @@ After the script completes, read all JSON files from `~/.claude/skills/multi-age
 
 **Output Format:**
 
-Write the combined report to `~/.claude/skills/multi-agent-code-review/output/COMBINED_REVIEW.md` using this structure:
+Write the combined report to `<project>/.reviews/COMBINED_REVIEW.md` using this structure:
 
 ```markdown
 # Code Review Report

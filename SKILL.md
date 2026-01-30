@@ -16,24 +16,45 @@ Activate this skill when the user asks to:
 - "Do a multi-agent review"
 - "Get multiple perspectives on this code"
 
+## CRITICAL: Working Directory
+
+**The review must run in the USER'S PROJECT DIRECTORY, not in this skill's directory.**
+
+Before running anything, determine the user's project directory by:
+1. Checking where the user started their Claude Code session
+2. Looking for their project's git root
+3. This is typically NOT `/Users/.../skills/multi-agent-code-review/`
+
 ## Workflow
 
-### Step 1: Run Parallel Reviews
+### Step 1: Identify the Target Repository
 
-Execute the review script to spawn parallel Cursor CLI agents:
+First, determine the user's current working directory (the repo to review):
 
 ```bash
-./scripts/run-reviews.sh
+pwd
 ```
+
+Confirm this is the correct repository (should have staged git changes to review).
+
+### Step 2: Run Parallel Reviews
+
+Run the review script FROM THE USER'S PROJECT DIRECTORY:
+
+```bash
+~/.claude/skills/multi-agent-code-review/scripts/run-reviews.sh
+```
+
+**IMPORTANT**: Run this command from the user's project directory, NOT from the skill directory. The script will automatically detect and use the current working directory.
 
 This will:
 - Run 4 agents in parallel (configurable in the script)
-- Save individual JSON results to `./output/`
+- Save individual JSON results to `~/.claude/skills/multi-agent-code-review/output/`
 - Take 1-3 minutes depending on code size
 
-### Step 2: Synthesize Results
+### Step 3: Synthesize Results
 
-After the script completes, read all JSON files in the output directory and synthesize them into a combined report.
+After the script completes, read all JSON files from `~/.claude/skills/multi-agent-code-review/output/` and synthesize them into a combined report.
 
 **Synthesis Rules:**
 1. Do NOT mention which agent found which issue
@@ -44,12 +65,12 @@ After the script completes, read all JSON files in the output directory and synt
 
 **Output Format:**
 
-Write the combined report to `./output/COMBINED_REVIEW.md` using this structure:
+Write the combined report to `~/.claude/skills/multi-agent-code-review/output/COMBINED_REVIEW.md` using this structure:
 
 ```markdown
 # Code Review Report
 
-**Repository:** [repo name]
+**Repository:** [repo name from user's directory]
 **Date:** [today's date]
 
 ---
@@ -95,9 +116,9 @@ Write the combined report to `./output/COMBINED_REVIEW.md` using this structure:
 [Priority action items table]
 ```
 
-### Step 3: Report to User
+### Step 4: Report to User
 
-After writing the combined report, summarize the key findings for the user:
+After writing the combined report, summarize the key findings:
 - Total issues found (by severity)
 - Top 3 priority items to address
 - Overall verdict
@@ -105,14 +126,14 @@ After writing the combined report, summarize the key findings for the user:
 ## Customization
 
 The user can customize:
-- **Agents/Models**: Edit `scripts/run-reviews.sh` → `MODELS` array
-- **Review focus**: Edit `prompts/review-prompt.md`
+- **Agents/Models**: Edit `~/.claude/skills/multi-agent-code-review/scripts/run-reviews.sh` → `MODELS` array
+- **Review focus**: Edit `~/.claude/skills/multi-agent-code-review/prompts/review-prompt.md`
 - **Thinking depth**: Add "think hard" or "ultrathink" to the prompt
 
 ## Files
 
 ```
-multi-agent-code-review-skill/
+~/.claude/skills/multi-agent-code-review/
 ├── SKILL.md              # This file
 ├── scripts/
 │   └── run-reviews.sh    # Parallel review runner
@@ -122,23 +143,3 @@ multi-agent-code-review-skill/
     ├── review_*.json     # Individual agent outputs
     └── COMBINED_REVIEW.md
 ```
-
-## Installation
-
-### Option 1: Project-local (recommended)
-```bash
-# Clone into your project's .claude/skills/ directory
-git clone https://github.com/ktaletsk/multi-agent-code-review-skill.git .claude/skills/multi-agent-code-review
-```
-
-### Option 2: Global
-```bash
-# Clone to global skills directory
-git clone https://github.com/ktaletsk/multi-agent-code-review-skill.git ~/.claude/skills/multi-agent-code-review
-```
-
-## Requirements
-
-- Cursor CLI (`cursor-agent`) installed and authenticated
-- Active Cursor subscription with access to desired models
-- Claude Code for synthesis step

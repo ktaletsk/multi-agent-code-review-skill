@@ -4,7 +4,7 @@ Provide a critical code review of the staged git changes. Think hard about poten
 
 Be thorough and skeptical. Assume there ARE bugs, edge cases, or improvements to find - your job is to find them. Do not approve changes without identifying at least one area for improvement.
 
-Output your review in this exact JSON format:
+IMPORTANT: Output ONLY valid JSON, no other text before or after. Use this exact format:
 
 ```json
 {

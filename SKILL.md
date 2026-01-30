@@ -1,6 +1,6 @@
 ---
-name: Multi-Agent Code Review
-description: Run parallel code reviews using multiple AI agents via Cursor CLI, then synthesize results into a comprehensive report. Use when asked to review code, review changes, or run a code review.
+name: multi-agent-code-review
+description: Run parallel code reviews with multiple AI agents, then synthesize into one report. Triggers on "review code" or "multi-agent review".
 ---
 
 # Multi-Agent Code Review Skill

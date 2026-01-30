@@ -74,11 +74,11 @@ echo ""
 # Read prompt
 PROMPT="$(cat "$PROMPT_FILE")"
 
-# Run all agents in parallel FROM THE TARGET DIRECTORY
+# Run all agents in parallel with TARGET_DIR as workspace
 PIDS=()
 for model in "${MODELS[@]}"; do
   echo "  ⏳ Starting: $model"
-  (cd "$TARGET_DIR" && cursor-agent -p --mode=ask --model="$model" "$PROMPT") \
+  cursor-agent -p --mode=ask --workspace="$TARGET_DIR" --model="$model" "$PROMPT" \
     > "$OUTPUT_DIR/review_${model}.json" 2>&1 &
   PIDS+=($!)
 done

@@ -32,8 +32,8 @@ PROMPT_FILE="$SKILL_DIR/prompts/review-prompt.md"
 # Models/Agents to use (customize as needed)
 # Run `cursor-agent --list-models` for available options
 MODELS=(
-  "sonnet-4.5"
-  "gpt-5.2"
+  "opus-4.5-thinking"
+  "gpt-5.2-high"
 )
 
 # Colors

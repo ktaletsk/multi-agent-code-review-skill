@@ -35,6 +35,7 @@ PROMPT_FILE="$SKILL_DIR/prompts/review-prompt.md"
 MODELS=(
   "opus-4.5-thinking"
   "gpt-5.2-high"
+  "gemini-3-pro"
 )
 
 # Colors
